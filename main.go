@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/sudofrost/task-tracker-cli/cmd"
@@ -91,6 +92,25 @@ func main() {
 				lenghOfStatusColumn, task.Status,
 				task.Description,
 			)
+		}
+	}))
+
+	cli.AddCommand(cmd.NewCommand("update", func(args []string) {
+		if len(args) < 2 {
+			fmt.Println("you must specify a task id and a new description")
+			return
+		}
+
+		id, err := strconv.ParseUint(args[0], 10, 64)
+		if err != nil {
+			fmt.Println("invalid task id")
+			return
+		}
+
+		err = t.UpdateDescription(id, args[1])
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
 	}))
 

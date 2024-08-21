@@ -1,6 +1,9 @@
 package tracker
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type TaskStatus string
 
@@ -45,6 +48,25 @@ func (t *Tracker) AddNewTask(description string) uint64 {
 	}
 	t.Tasks = append(t.Tasks, task)
 	return task.ID
+}
+
+func (t *Tracker) GetTask(id uint64) (*Task, error) {
+	for _, task := range t.Tasks {
+		if task.ID == id {
+			return task, nil
+		}
+	}
+	return nil, fmt.Errorf("task with id %d not found", id)
+}
+
+func (t *Tracker) UpdateDescription(id uint64, description string) error {
+	task, err := t.GetTask(id)
+	if err != nil {
+		return err
+	}
+	task.Description = description
+	task.UpdatedAt = time.Now().UTC().UnixMilli()
+	return nil
 }
 
 func (t *Tracker) GetTasks(status *TaskStatus) []*Task {
