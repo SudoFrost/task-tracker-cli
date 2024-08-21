@@ -11,11 +11,11 @@ const (
 )
 
 type Task struct {
-	ID uint64
-	Description string
-	Status TaskStatus
-	CreatedAt int64
-	UpdatedAt int64
+	ID          uint64     `json:"id"`
+	Description string     `json:"description"`
+	Status      TaskStatus `json:"status"`
+	CreatedAt   int64      `json:"createdAt"`
+	UpdatedAt   int64      `json:"updatedAt"`
 }
 
 type Tracker struct {
