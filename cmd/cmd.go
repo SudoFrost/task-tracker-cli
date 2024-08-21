@@ -24,9 +24,16 @@ func (cli *CLI) AddCommand(cmd Command) {
 }
 
 func (cli *CLI) Run() {
+	if len(cli.args) == 0 {
+		return
+	}
 	for _, cmd := range cli.commands {
 		if cmd.name == cli.args[0] {
-			cmd.handler(cli.args[1:])
+			args := []string{}
+			if len(cli.args) > 1 {
+				args = cli.args[1:]
+			}
+			cmd.handler(args)
 		}
 	}
 }
