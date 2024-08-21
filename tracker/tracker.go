@@ -46,3 +46,15 @@ func (t *Tracker) AddNewTask(description string) uint64 {
 	t.Tasks = append(t.Tasks, task)
 	return task.ID
 }
+
+func (t *Tracker) GetTasks(status *TaskStatus) []*Task {
+	tasks := make([]*Task, 0)
+
+	for _, task := range t.Tasks {
+		if status == nil || *status == task.Status {
+			tasks = append(tasks, task)
+		}
+	}
+
+	return tasks
+}

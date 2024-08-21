@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/sudofrost/task-tracker-cli/cmd"
 	"github.com/sudofrost/task-tracker-cli/persist"
@@ -16,9 +17,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	tracker := tracker.Tracker{Tasks: tasks}
+	t := tracker.Tracker{Tasks: tasks}
 	defer func() {
-		persist.Save("tasks.json", tracker.Tasks)
+		persist.Save("tasks.json", t.Tasks)
 	}()
 
 	cli.AddCommand(cmd.NewCommand("add", func(args []string) {
@@ -27,8 +28,70 @@ func main() {
 			return
 		}
 		description := args[0]
-		id := tracker.AddNewTask(description)
+		id := t.AddNewTask(description)
 		fmt.Println(id)
+	}))
+
+	cli.AddCommand(cmd.NewCommand("list", func(args []string) {
+		var status tracker.TaskStatus
+		if len(args) > 0 {
+			switch args[0] {
+			case string(tracker.TaskStatusTodo):
+				status = tracker.TaskStatusTodo
+			case string(tracker.TaskStatusInProgress):
+				status = tracker.TaskStatusInProgress
+			case string(tracker.TaskStatusDone):
+				status = tracker.TaskStatusDone
+			default:
+				fmt.Printf("invalid status: %s\n", args[0])
+				return
+			}
+		}
+		var tasks []*tracker.Task
+		if status == "" {
+			tasks = t.GetTasks(nil)
+		} else {
+			tasks = t.GetTasks(&status)
+		}
+
+		if len(tasks) == 0 {
+			fmt.Println("no tasks found")
+			return
+		}
+
+		var maxID uint64
+
+		for _, task := range tasks {
+			if task.ID > maxID {
+				maxID = task.ID
+			}
+		}
+
+		lenghOfIDColumn := len(fmt.Sprintf("%d", maxID))
+		lenghOfStatusColumn := len(status)
+		if lenghOfStatusColumn == 0 {
+			lenghOfStatusColumn = len(string(tracker.TaskStatusInProgress))
+		}
+
+		if lenghOfIDColumn < 2 {
+			lenghOfIDColumn = 2
+		}
+
+		if lenghOfStatusColumn < 6 {
+			lenghOfStatusColumn = 6
+		}
+
+		fmt.Printf(" %*s | %*s | %*s | %*s | %s\n", lenghOfIDColumn, "ID", 19, "Created AT", 19, "Updated AT", lenghOfStatusColumn, "Status", "Description")
+		for _, task := range tasks {
+			fmt.Printf(
+				" %*d | %*s | %*s | %*s | %s\n",
+				lenghOfIDColumn, task.ID,
+				19,	time.UnixMilli(task.CreatedAt).Format(time.DateTime),
+				19,	time.UnixMilli(task.UpdatedAt).Format(time.DateTime),
+				lenghOfStatusColumn, task.Status,
+				task.Description,
+			)
+		}
 	}))
 
 	cli.Run()
