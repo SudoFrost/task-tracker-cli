@@ -5,25 +5,23 @@ import (
 	"os"
 
 	"github.com/sudofrost/task-tracker-cli/cmd"
-	"github.com/sudofrost/task-tracker-cli/tracker"
 	"github.com/sudofrost/task-tracker-cli/persist"
+	"github.com/sudofrost/task-tracker-cli/tracker"
 )
 
-
-
 func main() {
-  cli := cmd.NewCLI(os.Args[1:])
-  
+	cli := cmd.NewCLI(os.Args[1:])
+
 	tasks, err := persist.Load[[]*tracker.Task]("tasks.json")
 	if err != nil {
 		panic(err)
 	}
 	tracker := tracker.Tracker{Tasks: tasks}
-	defer func ()  {
+	defer func() {
 		persist.Save("tasks.json", tracker.Tasks)
 	}()
 
-  cli.AddCommand(cmd.NewCommand("add", func(args []string) {
+	cli.AddCommand(cmd.NewCommand("add", func(args []string) {
 		if len(args) == 0 {
 			fmt.Println("you must specify a task description")
 			return

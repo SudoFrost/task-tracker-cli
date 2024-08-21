@@ -1,8 +1,7 @@
-package cmd 
-
+package cmd
 
 type Command struct {
-	name string
+	name    string
 	handler func([]string)
 }
 
@@ -16,7 +15,7 @@ type CLI struct {
 }
 
 func NewCLI(args []string) *CLI {
-	return &CLI{args:args}
+	return &CLI{args: args}
 }
 
 func (cli *CLI) AddCommand(cmd Command) {
