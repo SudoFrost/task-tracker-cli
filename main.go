@@ -114,5 +114,43 @@ func main() {
 		}
 	}))
 
+	cli.AddCommand(cmd.NewCommand("mark-in-progress", func(args []string) {
+		if len(args) < 1 {
+			fmt.Println("you must specify a task id")
+			return
+		}
+
+		id, err := strconv.ParseUint(args[0], 10, 64)
+		if err != nil {
+			fmt.Println("invalid task id")
+			return
+		}
+
+		err = t.UpdateStatus(id, tracker.TaskStatusInProgress)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}))
+
+	cli.AddCommand(cmd.NewCommand("mark-done", func(args []string) {
+		if len(args) < 1 {
+			fmt.Println("you must specify a task id")
+			return
+		}
+
+		id, err := strconv.ParseUint(args[0], 10, 64)
+		if err != nil {
+			fmt.Println("invalid task id")
+			return
+		}
+
+		err = t.UpdateStatus(id, tracker.TaskStatusDone)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}))
+
 	cli.Run()
 }

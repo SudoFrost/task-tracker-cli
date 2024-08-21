@@ -59,6 +59,16 @@ func (t *Tracker) GetTask(id uint64) (*Task, error) {
 	return nil, fmt.Errorf("task with id %d not found", id)
 }
 
+func (t *Tracker) UpdateStatus(id uint64, status TaskStatus) error {
+	task, err := t.GetTask(id)
+	if err != nil {
+		return err
+	}
+	task.Status = status
+	task.UpdatedAt = time.Now().UTC().UnixMilli()
+	return nil
+}
+
 func (t *Tracker) UpdateDescription(id uint64, description string) error {
 	task, err := t.GetTask(id)
 	if err != nil {
