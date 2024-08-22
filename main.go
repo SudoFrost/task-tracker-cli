@@ -95,39 +95,20 @@ func main() {
 			return
 		}
 
-		var maxID uint64
+		columns := []string{"ID", "Created AT", "Updated AT", "Status", "Description"}
+		data := make([]map[string]string, 0)
 
 		for _, task := range tasks {
-			if task.ID > maxID {
-				maxID = task.ID
-			}
+			data = append(data, map[string]string{
+				"ID":          fmt.Sprintf("%d", task.ID),
+				"Created AT":  time.UnixMilli(task.CreatedAt).Format(time.DateTime),
+				"Updated AT":  time.UnixMilli(task.UpdatedAt).Format(time.DateTime),
+				"Status":      string(task.Status),
+				"Description": task.Description,
+			})
 		}
 
-		lenghOfIDColumn := len(fmt.Sprintf("%d", maxID))
-		lenghOfStatusColumn := len(status)
-		if lenghOfStatusColumn == 0 {
-			lenghOfStatusColumn = len(string(tracker.TaskStatusInProgress))
-		}
-
-		if lenghOfIDColumn < 2 {
-			lenghOfIDColumn = 2
-		}
-
-		if lenghOfStatusColumn < 6 {
-			lenghOfStatusColumn = 6
-		}
-
-		fmt.Printf(" %*s | %*s | %*s | %*s | %s\n", lenghOfIDColumn, "ID", 19, "Created AT", 19, "Updated AT", lenghOfStatusColumn, "Status", "Description")
-		for _, task := range tasks {
-			fmt.Printf(
-				" %*d | %*s | %*s | %*s | %s\n",
-				lenghOfIDColumn, task.ID,
-				19, time.UnixMilli(task.CreatedAt).Format(time.DateTime),
-				19, time.UnixMilli(task.UpdatedAt).Format(time.DateTime),
-				lenghOfStatusColumn, task.Status,
-				task.Description,
-			)
-		}
+		PrintAsTable(columns, data, " | ")
 	}))
 
 	cli.AddCommand(cmd.NewCommand("update", func(args []string) {
