@@ -87,8 +87,8 @@ func main() {
 			fmt.Printf(
 				" %*d | %*s | %*s | %*s | %s\n",
 				lenghOfIDColumn, task.ID,
-				19,	time.UnixMilli(task.CreatedAt).Format(time.DateTime),
-				19,	time.UnixMilli(task.UpdatedAt).Format(time.DateTime),
+				19, time.UnixMilli(task.CreatedAt).Format(time.DateTime),
+				19, time.UnixMilli(task.UpdatedAt).Format(time.DateTime),
 				lenghOfStatusColumn, task.Status,
 				task.Description,
 			)
