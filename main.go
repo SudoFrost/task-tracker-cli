@@ -60,7 +60,7 @@ func main() {
 
 	cli.AddCommand(cmd.NewCommand("add", func(args []string) {
 		if len(args) == 0 {
-			fmt.Println("you must specify a task description")
+			fmt.Fprintln(os.Stderr, "you must specify a task description")
 			return
 		}
 		description := args[0]
@@ -91,7 +91,7 @@ func main() {
 		}
 
 		if len(tasks) == 0 {
-			fmt.Println("no tasks found")
+			fmt.Fprintln(os.Stderr, "no tasks found")
 			return
 		}
 
@@ -113,76 +113,76 @@ func main() {
 
 	cli.AddCommand(cmd.NewCommand("update", func(args []string) {
 		if len(args) < 2 {
-			fmt.Println("you must specify a task id and a new description")
+			fmt.Fprintln(os.Stderr, "you must specify a task id and a new description")
 			return
 		}
 
 		id, err := strconv.ParseUint(args[0], 10, 64)
 		if err != nil {
-			fmt.Println("invalid task id")
+			fmt.Fprintln(os.Stderr, "invalid task id")
 			return
 		}
 
 		err = t.UpdateDescription(id, args[1])
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			return
 		}
 	}))
 
 	cli.AddCommand(cmd.NewCommand("mark-in-progress", func(args []string) {
 		if len(args) < 1 {
-			fmt.Println("you must specify a task id")
+			fmt.Fprintln(os.Stderr, "you must specify a task id")
 			return
 		}
 
 		id, err := strconv.ParseUint(args[0], 10, 64)
 		if err != nil {
-			fmt.Println("invalid task id")
+			fmt.Fprintln(os.Stderr, "invalid task id")
 			return
 		}
 
 		err = t.UpdateStatus(id, tracker.TaskStatusInProgress)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			return
 		}
 	}))
 
 	cli.AddCommand(cmd.NewCommand("mark-done", func(args []string) {
 		if len(args) < 1 {
-			fmt.Println("you must specify a task id")
+			fmt.Fprintln(os.Stderr, "you must specify a task id")
 			return
 		}
 
 		id, err := strconv.ParseUint(args[0], 10, 64)
 		if err != nil {
-			fmt.Println("invalid task id")
+			fmt.Fprintln(os.Stderr, "invalid task id")
 			return
 		}
 
 		err = t.UpdateStatus(id, tracker.TaskStatusDone)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			return
 		}
 	}))
 
 	cli.AddCommand(cmd.NewCommand("delete", func(args []string) {
 		if len(args) < 1 {
-			fmt.Println("you must specify a task id")
+			fmt.Fprintln(os.Stderr, "you must specify a task id")
 			return
 		}
 
 		id, err := strconv.ParseUint(args[0], 10, 64)
 		if err != nil {
-			fmt.Println("invalid task id")
+			fmt.Fprintln(os.Stderr, "invalid task id")
 			return
 		}
 
 		err = t.DeleteTask(id)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintln(os.Stderr, err)
 			return
 		}
 	}))
