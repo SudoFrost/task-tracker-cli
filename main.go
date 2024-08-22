@@ -152,5 +152,24 @@ func main() {
 		}
 	}))
 
+	cli.AddCommand(cmd.NewCommand("delete", func(args []string) {
+		if len(args) < 1 {
+			fmt.Println("you must specify a task id")
+			return
+		}
+
+		id, err := strconv.ParseUint(args[0], 10, 64)
+		if err != nil {
+			fmt.Println("invalid task id")
+			return
+		}
+
+		err = t.DeleteTask(id)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}))
+
 	cli.Run()
 }

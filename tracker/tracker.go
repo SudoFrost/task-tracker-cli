@@ -79,6 +79,16 @@ func (t *Tracker) UpdateDescription(id uint64, description string) error {
 	return nil
 }
 
+func (t *Tracker) DeleteTask(id uint64) error {
+	for i, task := range t.Tasks {
+		if task.ID == id {
+			t.Tasks = append(t.Tasks[:i], t.Tasks[i+1:]...)
+			return nil
+		}
+	}
+	return fmt.Errorf("task with id %d not found", id)
+}
+
 func (t *Tracker) GetTasks(status *TaskStatus) []*Task {
 	tasks := make([]*Task, 0)
 
