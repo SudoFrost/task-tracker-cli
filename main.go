@@ -4,12 +4,47 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/sudofrost/task-tracker-cli/cmd"
 	"github.com/sudofrost/task-tracker-cli/persist"
 	"github.com/sudofrost/task-tracker-cli/tracker"
 )
+
+func PrintAsTable(columns []string, rows []map[string]string, seprator string) {
+	columnsLengths := make([]int, len(columns))
+
+	for i, column := range columns {
+		columnsLengths[i] = len(column)
+	}
+
+	for _, row := range rows {
+		for i, column := range columns {
+			if len(row[column]) > columnsLengths[i] {
+				columnsLengths[i] = len(row[column])
+			}
+		}
+	}
+
+	for i, column := range columns {
+		fmt.Printf("%s%s", strings.Repeat(" ", columnsLengths[i]-len(column)), column)
+		if i < len(columns)-1 {
+			fmt.Print(seprator)
+		}
+	}
+	fmt.Println()
+
+	for _, row := range rows {
+		for i, column := range columns {
+			fmt.Printf("%s%s", strings.Repeat(" ", columnsLengths[i]-len(row[column])), row[column])
+			if i < len(columns)-1 {
+				fmt.Print(seprator)
+			}
+		}
+		fmt.Println()
+	}
+}
 
 func main() {
 	cli := cmd.NewCLI(os.Args[1:])
